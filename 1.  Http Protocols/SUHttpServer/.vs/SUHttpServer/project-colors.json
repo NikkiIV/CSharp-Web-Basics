@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "0763fea3-8bad-46dc-a9b6-be35bd08d011": {
+      "ProjectGuid": "0763fea3-8bad-46dc-a9b6-be35bd08d011",
+      "DisplayName": "SUHttpServer",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
