@@ -11,28 +11,22 @@ namespace BasicWebServer.Server.HTTP
     {
         private readonly Dictionary<string, Cookie> cookies;
 
-        public CookieCollection()
-        {
-            cookies = new Dictionary<string, Cookie>();
-        }
+        public CookieCollection() 
+            => this.cookies = new Dictionary<string, Cookie>();
 
         public string this[string name] 
-            => cookies[name].Value;  
+            => this.cookies[name].Value;  
         
         public void Add(string name, string value) 
-            => cookies[name] = new Cookie(name, value);
+            => this.cookies[name] = new Cookie(name, value);
 
         public bool Contains(string name) 
-            => cookies.ContainsKey(name);
+            => this.cookies.ContainsKey(name);
 
         public IEnumerator<Cookie> GetEnumerator()
-        {
-            return cookies.Values.GetEnumerator();
-        }
+            => this.cookies.Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+            => this.GetEnumerator();
     }
 }
