@@ -51,6 +51,30 @@ namespace BasicWebServer.Demo
             await server.Start();
         }
 
+        private static void GetUserDataAction(Request request, Response response)
+        {
+            if (request.Session.ContainsKey(Session.SessionUserKey))
+            {
+                response.Body = "";
+                response.Body += $"<h3>Currently logged-in user " + 
+                    $"is with username '{Username}'<h3>";
+            }
+            else
+            {
+                response.Body = "";
+                response.Body += $"<h3>You should first log in " + 
+                    "- <a href='/Login'>Login</a><h3>";
+            }
+        }
+
+        private static void LogoutAction(Request request, Response response)
+        {
+            request.Session.Clear();
+
+            response.Body = "";
+            response.Body += "<h3>Logged out successfully!</h3>";
+        }
+
         private static void LoginAction(Request request, Response response)
         {
             request.Session.Clear();
