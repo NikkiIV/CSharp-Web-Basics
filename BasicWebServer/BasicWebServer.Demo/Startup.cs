@@ -20,6 +20,15 @@ namespace BasicWebServer.Demo
 
         private const string FileName = "content.txt";
 
+        private const string LoginForm = @"<form action='/Login' method='POST'>
+            Username: <input type='text' name='Username'/>
+            Password: <input type='text' name='Password'/>
+            <input type='submit' value ='Log In' /> 
+        </form>";
+
+        private const string Username = "user";
+        private const string Password = "user123";
+
         public static async Task Main()
         {
             await DownloadSitesAsTextFile(Startup.FileName,
@@ -33,31 +42,84 @@ namespace BasicWebServer.Demo
                 .MapGet("/Content", new HtmlResponse(Startup.DownloadForm))
                 .MapPost("/Content", new TextResponse(Startup.FileName))
                 .MapPost("/Cookies", new HtmlResponse("", Startup.AddCookieAction))
-                .MapPost("/Session", new TextResponse("", Startup.DisplaySessionInfoAction)));
+                .MapPost("/Session", new TextResponse("", Startup.DisplaySessionInfoAction))
+                .MapGet("/Login", new HtmlResponse(Startup.LoginForm))
+                .MapPost("/Login", new HtmlResponse("", Startup.LoginAction))
+                .MapGet("/Logout", new HtmlResponse("", Startup.LogoutAction))
+                .MapGet("/UserProfile", new HtmlResponse("", Startup.GetUserDataAction)));
                 
             await server.Start();
         }
 
-        private static void DisplaySessionInfoAction
-            (Request request, Response response)
+        private static void LoginAction(Request request, Response response)
         {
-            var sessionExists = request.Session
-                .ContainsKey(Session.SessionCurrentDateKey);
+            request.Session.Clear();
 
             var bodyText = "";
 
-            if (sessionExists)
+            var usernameMatches = request.Form["Username"] == Startup.Username;
+            var passwordMatches = request.Form["Password"] == Startup.Password;
+
+            if (usernameMatches && passwordMatches)
             {
-                var currentDate = request.Session[Session.SessionCurrentDateKey];
-                bodyText = $"Stored date: {currentDate}!";
+                request.Session[Session.SessionUserKey] = "MyUserId";
+                response.Cookies.Add(Session.SessionCookieName, 
+                    request.Session.Id);
+
+                bodyText = "<h3>Logged successsfully!</h3>";
             }
             else
             {
-                bodyText = "Current date stored!";
+                bodyText = Startup.LoginForm;
             }
 
             response.Body = "";
             response.Body += bodyText;
+        }
+
+        private static async Task DownloadSitesAsTextFile(
+         string filename, string[] urls)
+        {
+            var downloads = new List<Task<string>>();
+
+            foreach (var url in urls)
+            {
+                downloads.Add(DownloadWebSiteContent(url));
+            }
+
+            var responses = await Task.WhenAll(downloads);
+
+            var responsesString = string.Join(
+                Environment.NewLine + new String('-', 100),
+                responses);
+
+            await File.WriteAllTextAsync(filename, responsesString);
+        }
+
+        private static async Task<string> DownloadWebSiteContent(
+            string url)
+        {
+            var httpClient = new HttpClient();
+            using (httpClient)
+            {
+                var response = await httpClient.GetAsync(url);
+
+                var html = await response.Content.ReadAsStringAsync();
+
+                return html.Substring(0, 2000);
+            }
+        }
+
+        private static void AddFormDataAction(
+           Request request, Response response)
+        {
+            response.Body = "";
+
+            foreach (var (key, value) in request.Form)
+            {
+                response.Body += $"{key} - {value}";
+                response.Body += Environment.NewLine;
+            }
         }
 
         private static void AddCookieAction(
@@ -100,49 +162,27 @@ namespace BasicWebServer.Demo
             }
         }
 
-        private static void AddFormDataAction(
-            Request request, Response response)
+        private static void DisplaySessionInfoAction
+            (Request request, Response response)
         {
+            var sessionExists = request.Session
+                .ContainsKey(Session.SessionCurrentDateKey);
+
+            var bodyText = "";
+
+            if (sessionExists)
+            {
+                var currentDate = request.Session[Session.SessionCurrentDateKey];
+                bodyText = $"Stored date: {currentDate}!";
+            }
+            else
+            {
+                bodyText = "Current date stored!";
+            }
+
             response.Body = "";
-
-            foreach (var (key, value) in request.Form)
-            {
-                response.Body += $"{key} - {value}";
-                response.Body += Environment.NewLine;
-            }
+            response.Body += bodyText;
         }
 
-        private static async Task<string> DownloadWebSiteContent(
-            string url)
-        {
-            var httpClient = new HttpClient();
-            using (httpClient)
-            {
-                var response = await httpClient.GetAsync(url);
-
-                var html = await response.Content.ReadAsStringAsync();
-
-                return html.Substring(0, 2000);
-            }
-        }
-
-        private static async Task DownloadSitesAsTextFile(
-         string filename, string[] urls)
-        {
-            var downloads = new List<Task<string>>();
-
-            foreach (var url in urls)
-            {
-                downloads.Add(DownloadWebSiteContent(url));
-            }
-
-            var responses = await Task.WhenAll(downloads);
-
-            var responsesString = string.Join(
-                Environment.NewLine + new String('-', 100),
-                responses);
-
-            await File.WriteAllTextAsync(filename, responsesString);
-        }
     }
 }
