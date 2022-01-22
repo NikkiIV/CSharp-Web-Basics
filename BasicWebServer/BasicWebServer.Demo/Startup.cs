@@ -32,21 +32,45 @@ namespace BasicWebServer.Demo
                 .MapPost("/HTML", new TextResponse("", Startup.AddFormDataAction))
                 .MapGet("/Content", new HtmlResponse(Startup.DownloadForm))
                 .MapPost("/Content", new TextResponse(Startup.FileName))
-                .MapPost("/Cookies", new HtmlResponse("", Startup.AddCookieAction)));
+                .MapPost("/Cookies", new HtmlResponse("", Startup.AddCookieAction))
+                .MapPost("/Session", new TextResponse("", Startup.DisplaySessionInfoAction)));
                 
             await server.Start();
+        }
+
+        private static void DisplaySessionInfoAction
+            (Request request, Response response)
+        {
+            var sessionExists = request.Session
+                .ContainsKey(Session.SessionCurrentDateKey);
+
+            var bodyText = "";
+
+            if (sessionExists)
+            {
+                var currentDate = request.Session[Session.SessionCurrentDateKey];
+                bodyText = $"Stored date: {currentDate}!";
+            }
+            else
+            {
+                bodyText = "Current date stored!";
+            }
+
+            response.Body = "";
+            response.Body += bodyText;
         }
 
         private static void AddCookieAction(
             Request request, Response response)
         {
-            var requestHasCookies = request.Cookies.Any();
+            var requestHasCookies = request.Cookies
+                .Any(c => c.Name != Session.SessionCookieName);
             var bodyText = "";
 
             if (requestHasCookies)
             {
                 var cookieText = new StringBuilder();
-                cookieText.AppendLine("<h1>Cookies<h1>");
+                cookieText.AppendLine("<h1>Cookies</h1>");
 
                 cookieText
                     .Append("<table border='1'><tr><th>Name</th><th>Value</th></tr>");
