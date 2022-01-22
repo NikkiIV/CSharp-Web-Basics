@@ -40,7 +40,7 @@ namespace BasicWebServer.Demo
         private static void AddCookieAction(
             Request request, Response response)
         {
-            bool requestHasCookies = request.Cookies.Any();
+            var requestHasCookies = request.Cookies.Any();
             var bodyText = "";
 
             if (requestHasCookies)
