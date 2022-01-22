@@ -1,7 +1,8 @@
 ﻿using BasicWebServer.Server.Common;
+using BasicWebServer.Server.HTTP;
 using System.Text;
 
-namespace BasicWebServer.Server.HTTP
+namespace BasicWebServer.Server.Responses
 {
     public class ContentResponse : Response
     {
