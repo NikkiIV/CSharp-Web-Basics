@@ -1,11 +1,10 @@
-﻿using BasicWebServer.Server.HTTP;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BasicWebServer.Server.Responses
+namespace BasicWebServer.Server.HTTP
 {
     public class TextFileResponse : Response
     {
@@ -26,10 +25,9 @@ namespace BasicWebServer.Server.Responses
                 this.Body = File.ReadAllTextAsync(this.FileName).Result;
 
                 var fileBytesCount = new FileInfo(this.FileName).Length;
+                
                 this.Headers.Add(Header.ContentType, fileBytesCount.ToString());
-
-                this.Headers.Add(Header.ContentDisposition,
-                    $"attachment; filename=\"{this.FileName}\"");
+                this.Headers.Add(Header.ContentDisposition, $"attachment; filename=\"{this.FileName}\"");
             }
 
             return base.ToString();

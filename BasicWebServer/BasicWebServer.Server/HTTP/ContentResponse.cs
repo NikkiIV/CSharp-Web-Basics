@@ -1,11 +1,12 @@
 ﻿using BasicWebServer.Server.Common;
-using BasicWebServer.Server.HTTP;
 using System.Text;
 
-namespace BasicWebServer.Server.Responses
+namespace BasicWebServer.Server.HTTP
 {
     public class ContentResponse : Response
     {
+        // имаме accept the action through the constructor as an optional parameter -> Action<Request, Response> preRenderAction = null
+        // в контекста на FORM - да можем да проеним респонса
         public ContentResponse(string content, string contentType,
             Action<Request, Response> preRenderAction = null)
             : base(StatusCode.OK)

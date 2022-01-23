@@ -33,11 +33,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "K:\\SOFTuni\\06 C# Web (Solutions)\\C# Web Basics\\BasicWebServer\\BasicWebServer.Demo\\BasicWebServer.Demo.csproj",
+      "projectUniqueName": "K:\\SOFTuni\\06 C# Web - test\\OLD (solutions)\\BasicWebServer-master\\BasicWebServer.Demo\\BasicWebServer.Demo.csproj",
       "projectName": "BasicWebServer.Demo",
-      "projectPath": "K:\\SOFTuni\\06 C# Web (Solutions)\\C# Web Basics\\BasicWebServer\\BasicWebServer.Demo\\BasicWebServer.Demo.csproj",
+      "projectPath": "K:\\SOFTuni\\06 C# Web - test\\OLD (solutions)\\BasicWebServer-master\\BasicWebServer.Demo\\BasicWebServer.Demo.csproj",
       "packagesPath": "C:\\Users\\Nikki\\.nuget\\packages\\",
-      "outputPath": "K:\\SOFTuni\\06 C# Web (Solutions)\\C# Web Basics\\BasicWebServer\\BasicWebServer.Demo\\obj\\",
+      "outputPath": "K:\\SOFTuni\\06 C# Web - test\\OLD (solutions)\\BasicWebServer-master\\BasicWebServer.Demo\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -58,8 +58,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "K:\\SOFTuni\\06 C# Web (Solutions)\\C# Web Basics\\BasicWebServer\\BasicWebServer.Server\\BasicWebServer.Server.csproj": {
-              "projectPath": "K:\\SOFTuni\\06 C# Web (Solutions)\\C# Web Basics\\BasicWebServer\\BasicWebServer.Server\\BasicWebServer.Server.csproj"
+            "K:\\SOFTuni\\06 C# Web - test\\OLD (solutions)\\BasicWebServer-master\\BasicWebServer.Server\\BasicWebServer.Server.csproj": {
+              "projectPath": "K:\\SOFTuni\\06 C# Web - test\\OLD (solutions)\\BasicWebServer-master\\BasicWebServer.Server\\BasicWebServer.Server.csproj"
             }
           }
         }

@@ -13,7 +13,7 @@ namespace BasicWebServer.Server.HTTP
 
         public HeaderCollection Headers { get; private set; }
 
-        public CookieCollection Cookies { get; private set; }
+        public CookieCollection Cookies { get; set; }
 
         public string Body { get; private set; }
 
@@ -75,27 +75,24 @@ namespace BasicWebServer.Server.HTTP
             if (headers.Contains(Header.Cookie))
             {
                 var cookieHeader = headers[Header.Cookie];
+                var allCookies = cookieHeader.Split(';', StringSplitOptions.RemoveEmptyEntries);
                 
-                var allCookies = cookieHeader.Split(';');
-
                 foreach (var cookieText in allCookies)
                 {
-                    var cookieParts = cookieText.Split('=');
-
-                    //cookies.Add(cookieParts[0]?.Trim(), cookieParts[1]?.Trim());
+                    var cookieParts = cookieText.Split('=', StringSplitOptions.RemoveEmptyEntries);
 
                     var cookieName = cookieParts[0].Trim();
                     var cookieValue = cookieParts[1].Trim();
 
                     cookieCollection.Add(cookieName, cookieValue);
-                }                
+                }
             }
 
             return cookieCollection;
         }
 
-        private static Dictionary<string, string> ParseForm(
-            HeaderCollection headers, string body)
+        // метода следва да върне collection of form data pairs
+        private static Dictionary<string, string> ParseForm(HeaderCollection headers, string body)
         {
             var formCollection = new Dictionary<string, string>();
 
@@ -113,6 +110,8 @@ namespace BasicWebServer.Server.HTTP
             return formCollection;
         }
 
+        // The method will accept the request body as a string, decode it and split it into parts
+        // to get the key and value of each pair of form data
         private static Dictionary<string, string> ParseFormData(string bodyLines)
         => HttpUtility.UrlDecode(bodyLines)
             .Split("&")
@@ -141,7 +140,7 @@ namespace BasicWebServer.Server.HTTP
                     throw new InvalidOperationException("Request is not valid.");
                 }
 
-                var headerName = headerParts[0];
+                var headerName = headerParts[0].Trim();
                 var headerValue = headerParts[1].Trim();
 
                 headerCollection.Add(headerName, headerValue);
