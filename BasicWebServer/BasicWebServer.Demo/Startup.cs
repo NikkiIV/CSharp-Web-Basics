@@ -40,7 +40,7 @@ namespace BasicWebServer.Demo
                 .MapGet("/HTML", new HtmlResponse(Startup.HtmlForm))                
                 .MapPost("/HTML", new TextResponse("", Startup.AddFormDataAction))
                 .MapGet("/Content", new HtmlResponse(Startup.DownloadForm))
-                .MapPost("/Content", new TextFileResponse(Startup.FileName))
+                .MapPost("/Content", new FileResponse(Startup.FileName))
                 .MapGet("/Cookies", new HtmlResponse("", Startup.AddCookiesAction))
                 .MapGet("/Session", new TextResponse("", Startup.DisplaySessionInfoAction))
                 .MapGet("/Login", new HtmlResponse(Startup.LoginForm))

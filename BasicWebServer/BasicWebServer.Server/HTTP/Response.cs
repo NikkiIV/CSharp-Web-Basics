@@ -20,10 +20,8 @@ namespace BasicWebServer.Server.HTTP
 
         public string Body { get; set; }
 
-        // this will allow the action to be executed in the response (this is the first step. second see ContentRespose class)
-        // It should be executed after the request is parsed from the browser, as its form data is used,
-        // and before the response is returned to the browser.
-        // в тази връзка има добавени редове код в while-loop of the Start() method in the HttpServer class
+        public byte[] FileContent { get; set; }
+
         public Action<Request, Response> PreRenderAction { get; protected set; }
 
         public override string ToString()

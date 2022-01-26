@@ -120,6 +120,13 @@ namespace BasicWebServer.Server
         {
             var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
 
+            if (response.FileContent != null)
+            {
+                responseBytes = responseBytes
+                    .Concat(response.FileContent)
+                    .ToArray();
+            }
+
             await networkStream.WriteAsync(responseBytes);
         }
     }
