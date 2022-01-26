@@ -34,3 +34,15 @@ K:\SOFTuni\06 C# Web - test\OLD (solutions)\BasicWebServer-master\BasicWebServer
 K:\SOFTuni\06 C# Web - test\OLD (solutions)\BasicWebServer-master\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.dll
 K:\SOFTuni\06 C# Web - test\OLD (solutions)\BasicWebServer-master\BasicWebServer.Server\obj\Debug\net6.0\ref\BasicWebServer.Server.dll
 K:\SOFTuni\06 C# Web - test\OLD (solutions)\BasicWebServer-master\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.pdb
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\bin\Debug\net6.0\BasicWebServer.Server.deps.json
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\bin\Debug\net6.0\BasicWebServer.Server.dll
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\bin\Debug\net6.0\ref\BasicWebServer.Server.dll
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\bin\Debug\net6.0\BasicWebServer.Server.pdb
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.csproj.AssemblyReference.cache
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.GeneratedMSBuildEditorConfig.editorconfig
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.AssemblyInfoInputs.cache
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.AssemblyInfo.cs
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.csproj.CoreCompileInputs.cache
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.dll
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\ref\BasicWebServer.Server.dll
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.pdb
