@@ -9,13 +9,7 @@ using System.Web;
 namespace BasicWebServer.Demo
 {
     public class Startup
-    {
-        private const string HtmlForm = @"<form action='/HTML' method='POST'>
-            Name: <input type='text' name='Name'/>
-            Age: <input type='number' name ='Age'/>
-            <input type='submit' value ='Save' />
-        </form>";
-
+    {       
         private const string DownloadForm = @"<form action='/Content' method='POST'>
             <input type='submit' value ='Download Sites Content' /> 
         </form>";
@@ -34,10 +28,10 @@ namespace BasicWebServer.Demo
         public static async Task Main()
         {
             await new HttpServer(routes => routes
-                .MapGet<HomeController>("/", c => c.Index()))
-                //.MapGet<HomeController>("/Redirect", c => c.Redirect())
-                //.MapGet<HomeController>("/HTML", c => c.Html())
-                //.MapPost<HomeController>("/HTML", c => c.HtmlFormPost())
+                .MapGet<HomeController>("/", c => c.Index())
+                .MapGet<HomeController>("/Redirect", c => c.Redirect())
+                .MapGet<HomeController>("/HTML", c => c.Html())
+                .MapPost<HomeController>("/HTML", c => c.HtmlFormPost()))
                 //.MapGet<HomeController>("/Content", c => c.Content())
                 //.MapPost<HomeController>("/Content", c => c.DownloadContent())
                 //.MapGet<HomeController>("/Cookies", c => c.Cookies())

@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace BasicWebServer.Server.Controllers
 {
-    public class Controller
+    public abstract class Controller
     {
         protected Request Request { get; private init; }
 
         public Controller(Request request)
         {
-            Request = request;
+            this.Request = request;
         }
 
         protected Response Text(string text) => new TextResponse(text);

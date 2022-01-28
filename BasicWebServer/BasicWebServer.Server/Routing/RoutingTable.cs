@@ -16,44 +16,25 @@ namespace BasicWebServer.Server.Routing
             [Method.Delete] = new(StringComparer.InvariantCultureIgnoreCase)
         };
 
-        public IRoutingTable Map(
-            Method method,
+        public IRoutingTable Map(Method method,
             string path,
             Func<Request, Response> responseFunction)
         {
             Guard.AgainstNull(path, nameof(path));
             Guard.AgainstNull(responseFunction, nameof(responseFunction));
 
-            switch (method)
-            {
-                case Method.Get:
-                    return MapGet(path, responseFunction);
-                case Method.Post:
-                    return MapPost(path, responseFunction);
-                case Method.Put:
-                case Method.Delete:
-                default:
-                    throw new ArgumentOutOfRangeException($"The method {nameof(method)} is not supported!");
-            }
-        }
-
-        private IRoutingTable MapGet(
-            string path,
-            Func<Request, Response> responseFunction)
-        {
-            routes[Method.Get][path] = responseFunction;
+            this.routes[method][path] = responseFunction;
 
             return this;
         }
 
-        private IRoutingTable MapPost(
-            string path,
+        public IRoutingTable MapGet(string path,
             Func<Request, Response> responseFunction)
-        {
-            routes[Method.Post][path] = responseFunction;
+            => Map(Method.Get, path, responseFunction);
 
-            return this;
-        }
+        public IRoutingTable MapPost(string path,
+            Func<Request, Response> responseFunction)
+            => Map(Method.Post, path, responseFunction);
 
         public Response MatchRequest(Request request)
         {
