@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using BasicWebServer.Server.HTTP;
 
-namespace BasicWebServer.Server.HTTP
+namespace BasicWebServer.Server.Responses
 {
     public class FileResponse : Response
     {
         public string FileName { get; init; }
 
         public FileResponse(string fileName)
-            : base(StatusCode.OK)
+             : base(StatusCode.OK)
         {
             this.FileName = fileName;
 
@@ -26,9 +23,9 @@ namespace BasicWebServer.Server.HTTP
                 FileContent = File.ReadAllBytes(this.FileName);
 
                 var fileBytesCount = new FileInfo(this.FileName).Length;
-                
-                this.Headers.Add(Header.ContentType, fileBytesCount.ToString());
-                this.Headers.Add(Header.ContentDisposition, 
+                this.Headers.Add(Header.ContentLength, fileBytesCount.ToString());
+
+                this.Headers.Add(Header.ContentDisposition,
                     $"attachment; filename=\"{this.FileName}\"");
             }
 

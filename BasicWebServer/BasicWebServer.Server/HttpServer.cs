@@ -1,8 +1,11 @@
-﻿using BasicWebServer.Server.HTTP;
-using BasicWebServer.Server.Routing;
+﻿using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using BasicWebServer.Server.HTTP;
+using BasicWebServer.Server.Routing;
+using System.Linq;
 
 namespace BasicWebServer.Server
 {
@@ -14,15 +17,12 @@ namespace BasicWebServer.Server
 
         private readonly RoutingTable routingTable;
 
-        public HttpServer
-            (string ipAddress,
-            int port,
-            Action<IRoutingTable> routingTableConfiguration)
+        public HttpServer(string ipAddress, int port, Action<IRoutingTable> routingTableConfiguration)
         {
             this.ipAddress = IPAddress.Parse(ipAddress);
             this.port = port;
 
-            this.serverListener = new TcpListener(this.ipAddress, this.port);
+            this.serverListener = new TcpListener(this.ipAddress, port);
 
             routingTableConfiguration(this.routingTable = new RoutingTable());
         }
@@ -35,7 +35,6 @@ namespace BasicWebServer.Server
         public HttpServer(Action<IRoutingTable> routingTable)
             : this(8080, routingTable)
         {
-
         }
 
         public async Task Start()
@@ -60,27 +59,13 @@ namespace BasicWebServer.Server
                     var request = Request.Parse(requestText);
 
                     var response = this.routingTable.MatchRequest(request);
-                                        
+
                     AddSession(request, response);
 
                     await WriteResponse(networkStream, response);
 
                     connection.Close();
                 });
-            }
-        }
-
-        private static void AddSession(Request request, Response response)
-        {
-            var sessionExists = request.Session
-                .ContainsKey(Session.SessionCurrentDateKey);
-
-            if (!sessionExists)
-            {
-                request.Session[Session.SessionCurrentDateKey]
-                    = DateTime.Now.ToString();
-                response.Cookies
-                    .Add(Session.SessionCookieName, request.Session.Id);
             }
         }
 
@@ -106,24 +91,34 @@ namespace BasicWebServer.Server
 
                 requestBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
             }
-            while (networkStream.DataAvailable); //May not run correctly over the Internet
+            while (networkStream.DataAvailable); // May not run correctly over the Internet
 
             return requestBuilder.ToString();
         }
 
-        private async Task WriteResponse(
-            NetworkStream networkStream, Response response)
+        private async Task WriteResponse(NetworkStream networkStream, Response response)
         {
-            var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
+            var resposeBytes = Encoding.UTF8.GetBytes(response.ToString());
 
             if (response.FileContent != null)
             {
-                responseBytes = responseBytes
+                resposeBytes = resposeBytes
                     .Concat(response.FileContent)
                     .ToArray();
             }
 
-            await networkStream.WriteAsync(responseBytes);
+            await networkStream.WriteAsync(resposeBytes);
+        }
+
+        private static void AddSession(Request request, Response response)
+        {
+            var sessionExists = request.Session.ContainsKey(Session.SessionCurrentDateKey);
+
+            if (!sessionExists)
+            {
+                request.Session[Session.SessionCurrentDateKey] = DateTime.Now.ToString();
+                response.Cookies.Add(Session.SessionCookieName, request.Session.Id);
+            }
         }
     }
 }

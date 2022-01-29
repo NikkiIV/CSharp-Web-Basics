@@ -1,5 +1,7 @@
-﻿using BasicWebServer.Server.Common;
+﻿using System;
+using System.Collections.Generic;
 using BasicWebServer.Server.HTTP;
+using BasicWebServer.Server.Common;
 using BasicWebServer.Server.Responses;
 
 namespace BasicWebServer.Server.Routing
@@ -16,25 +18,44 @@ namespace BasicWebServer.Server.Routing
             [Method.Delete] = new(StringComparer.InvariantCultureIgnoreCase)
         };
 
-        public IRoutingTable Map(Method method,
-            string path,
+        public IRoutingTable Map(
+            Method method, 
+            string path, 
             Func<Request, Response> responseFunction)
         {
             Guard.AgainstNull(path, nameof(path));
             Guard.AgainstNull(responseFunction, nameof(responseFunction));
 
-            this.routes[method][path] = responseFunction;
+            switch (method)
+            {
+                case Method.Get:
+                    return MapGet(path, responseFunction);
+                case Method.Post:
+                    return MapPost(path, responseFunction); 
+                case Method.Put:
+                case Method.Delete:
+                default:
+                    throw new ArgumentOutOfRangeException($"The method {nameof(method)} is not supported!");
+            }
+        }
+
+        private IRoutingTable MapGet(
+            string path,
+            Func<Request, Response> responseFunction)
+        {
+            routes[Method.Get][path] = responseFunction;
 
             return this;
         }
 
-        public IRoutingTable MapGet(string path,
+        private IRoutingTable MapPost(
+            string path,
             Func<Request, Response> responseFunction)
-            => Map(Method.Get, path, responseFunction);
+        {
+            routes[Method.Post][path] = responseFunction;
 
-        public IRoutingTable MapPost(string path,
-            Func<Request, Response> responseFunction)
-            => Map(Method.Post, path, responseFunction);
+            return this;
+        }
 
         public Response MatchRequest(Request request)
         {

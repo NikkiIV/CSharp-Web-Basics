@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace BasicWebServer.Server.HTTP
 {
@@ -33,7 +34,7 @@ namespace BasicWebServer.Server.HTTP
                 result.AppendLine(header.ToString());
             }
 
-            foreach (var cookie in Cookies)
+            foreach (var cookie in this.Cookies)
             {
                 result.AppendLine($"{Header.SetCookie}: {cookie}");
             }

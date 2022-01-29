@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
 using System.Web;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace BasicWebServer.Server.HTTP
 {
@@ -13,7 +15,7 @@ namespace BasicWebServer.Server.HTTP
 
         public HeaderCollection Headers { get; private set; }
 
-        public CookieCollection Cookies { get; set; }
+        public CookieCollection Cookies { get; private set; }
 
         public string Body { get; private set; }
 
@@ -54,73 +56,17 @@ namespace BasicWebServer.Server.HTTP
             };
         }
 
-        private static Session GetSession(CookieCollection cookies)
+        private static Method ParseMethod(string method)
         {
-            var sessionId = cookies.Contains(Session.SessionCookieName)
-                ? cookies[Session.SessionCookieName]
-                : Guid.NewGuid().ToString();
-
-            if (!Sessions.ContainsKey(sessionId))
+            try
             {
-                Sessions[sessionId] = new Session(sessionId);
+                return (Method)Enum.Parse(typeof(Method), method, true);
             }
-
-            return Sessions[sessionId];
-        }
-
-        private static CookieCollection ParseCookies(HeaderCollection headers)
-        {
-            var cookieCollection = new CookieCollection();
-
-            if (headers.Contains(Header.Cookie))
+            catch (Exception)
             {
-                var cookieHeader = headers[Header.Cookie];
-                var allCookies = cookieHeader.Split(';', StringSplitOptions.RemoveEmptyEntries);
-                
-                foreach (var cookieText in allCookies)
-                {
-                    var cookieParts = cookieText.Split('=', StringSplitOptions.RemoveEmptyEntries);
-
-                    var cookieName = cookieParts[0].Trim();
-                    var cookieValue = cookieParts[1].Trim();
-
-                    cookieCollection.Add(cookieName, cookieValue);
-                }
+                throw new InvalidOperationException($"Method '{method}' is not supported");
             }
-
-            return cookieCollection;
         }
-
-        // метода следва да върне collection of form data pairs
-        private static Dictionary<string, string> ParseForm(HeaderCollection headers, string body)
-        {
-            var formCollection = new Dictionary<string, string>();
-
-            if (headers.Contains(Header.ContentType)
-                && headers[Header.ContentType] == ContentType.FormUrlEncoded)
-            {
-                var parsedResult = ParseFormData(body);
-
-                foreach (var (name, value) in parsedResult)
-                {
-                    formCollection.Add(name, value);
-                }
-            }
-
-            return formCollection;
-        }
-
-        // The method will accept the request body as a string, decode it and split it into parts
-        // to get the key and value of each pair of form data
-        private static Dictionary<string, string> ParseFormData(string bodyLines)
-        => HttpUtility.UrlDecode(bodyLines)
-            .Split("&")
-            .Select(part => part.Split('='))
-            .Where(part => part.Length == 2)
-            .ToDictionary(
-                part => part[0],
-                part => part[1],
-                StringComparer.InvariantCultureIgnoreCase);
 
         private static HeaderCollection ParseHeaders(IEnumerable<string> headerLines)
         {
@@ -140,7 +86,7 @@ namespace BasicWebServer.Server.HTTP
                     throw new InvalidOperationException("Request is not valid.");
                 }
 
-                var headerName = headerParts[0].Trim();
+                var headerName = headerParts[0];
                 var headerValue = headerParts[1].Trim();
 
                 headerCollection.Add(headerName, headerValue);
@@ -149,16 +95,70 @@ namespace BasicWebServer.Server.HTTP
             return headerCollection;
         }
 
-        private static Method ParseMethod(string method)
+        private static CookieCollection ParseCookies(HeaderCollection headers)
         {
-            try
+            var cookieCollection = new CookieCollection();
+
+            if (headers.Contains(Header.Cookie))
             {
-                return (Method)Enum.Parse(typeof(Method), method, true);
+                var cookieHeader = headers[Header.Cookie];
+
+                var allCookies = cookieHeader.Split(';');
+
+                foreach (var cookieText in allCookies)
+                {
+                    var cookieParts = cookieText.Split('=');
+
+                    var cookieName = cookieParts[0].Trim();
+                    var cookieValue = cookieParts[1].Trim();
+
+                    cookieCollection.Add(cookieName, cookieValue);
+                }
             }
-            catch (Exception)
-            {
-                throw new InvalidOperationException($"Method '{method} is not supported.'");
-            }
+
+            return cookieCollection;
         }
+
+        private static Session GetSession(CookieCollection cookies)
+        {
+            var sessionId = cookies.Contains(Session.SessionCookieName)
+                ? cookies[Session.SessionCookieName]
+                : Guid.NewGuid().ToString();
+
+            if (!Sessions.ContainsKey(sessionId))
+            {
+                Sessions[sessionId] = new Session(sessionId);
+            }
+
+            return Sessions[sessionId];
+        }
+
+        private static Dictionary<string, string> ParseForm(HeaderCollection headers, string body)
+        {
+            var formCollection = new Dictionary<string, string>();
+
+            if (headers.Contains(Header.ContentType)
+                && headers[Header.ContentType] == ContentType.FormUrlEncoded)
+            {
+                var parsedResult = ParseFormData(body);
+
+                foreach (var (name, value) in parsedResult)
+                {
+                    formCollection.Add(name, value);
+                }
+            }
+
+            return formCollection;
+        }
+
+        private static Dictionary<string, string> ParseFormData(string bodyLines)
+           => HttpUtility.UrlDecode(bodyLines)
+               .Split('&')
+               .Select(part => part.Split('='))
+               .Where(part => part.Length == 2)
+               .ToDictionary(
+                   part => part[0],
+                   part => part[1],
+                   StringComparer.InvariantCultureIgnoreCase);
     }
 }

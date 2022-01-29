@@ -1,16 +1,14 @@
-﻿using BasicWebServer.Server.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using BasicWebServer.Server.Common;
 
 namespace BasicWebServer.Server.HTTP
 {
     public class Session
     {
         public const string SessionCookieName = "MyWebServerSID";
+
         public const string SessionCurrentDateKey = "CurrentDate";
+
         public const string SessionUserKey = "AuthenticatedUserId";
 
         private Dictionary<string, string> data;
@@ -20,6 +18,7 @@ namespace BasicWebServer.Server.HTTP
             Guard.AgainstNull(id, nameof(id));
 
             this.Id = id;
+
             this.data = new Dictionary<string, string>();
         }
 
@@ -36,6 +35,5 @@ namespace BasicWebServer.Server.HTTP
 
         public void Clear()
            => this.data.Clear();
-
     }
 }

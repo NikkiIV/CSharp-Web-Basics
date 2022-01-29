@@ -18,8 +18,8 @@ namespace BasicWebServer.Server.HTTP
             Guard.AgainstNull(name, nameof(name));
             Guard.AgainstNull(value, nameof(value));
 
-            Name = name;
-            Value = value;
+            this.Name = name;
+            this.Value = value;
         }
 
         public string Name { get; init; }

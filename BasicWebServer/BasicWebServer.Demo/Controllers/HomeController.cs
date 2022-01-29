@@ -1,24 +1,15 @@
-﻿using BasicWebServer.Server.Controllers;
+﻿using BasicWebServer.Demo.Models;
+using BasicWebServer.Server.Controllers;
 using BasicWebServer.Server.HTTP;
+using System.Linq;
 using System.Text;
 using System.Web;
 
 namespace BasicWebServer.Demo.Controllers
 {
-    public class HomeController: Controller
+    public class HomeController : Controller
     {
         private const string FileName = "content.txt";
-
-        private const string HtmlForm = @"<form action='/HTML' method='POST'>
-            Name: <input type='text' name='Name'/>
-            Age: <input type='number' name ='Age'/>
-            <input type='submit' value ='Save' />
-        </form>";
-
-        private const string DownloadForm = @"<form action='/Content' method='POST'>
-            <input type='submit' value ='Download Sites Content' /> 
-        </form>";
-
 
         public HomeController(Request request)
             : base(request)
@@ -26,36 +17,34 @@ namespace BasicWebServer.Demo.Controllers
 
         }
 
+        public Response Index() => Text("Hello from the server!");
+
+        public Response Redirect() => Redirect("https://softuni.bg");
+
+        public Response Html() => View();
+
         public Response HtmlFormPost()
         {
-            string formData = string.Empty;
+            string name = Request.Form["Name"];
+            string age = Request.Form["Age"];
 
-            foreach (var (key, value) in this.Request.Form)
+            var model = new FormViewModel()
             {
-                formData += $"{key} - {value}";
-                formData += Environment.NewLine;
-            }
+                Name = name,
+                Age = int.Parse(age)
+            };
 
-            return Text(formData);
+            return View(model);
         }
 
-        public Response DownloadContent()
-        {
-            DownloadSitesAsTextFile(HomeController.FileName,
-                new string[] { "https://judge.softuni.org/", "https://softuni.org/" })
-                .Wait();
+        public Response DownloadContent() => File(FileName);
 
-            return File(HomeController.FileName);
-        }
-
-        public Response Index() => Text("Hello from the server!");
-        public Response Redirect() => Redirect("https://softuni.org/");
-        public Response Html() => Html(HomeController.HtmlForm);
-        public Response Content() => Html(HomeController.DownloadForm);
         public Response Cookies()
         {
-            if (this.Request.Cookies.Any(c => c.Name !=
-                BasicWebServer.Server.HTTP.Session.SessionCookieName))
+            var requestHasCookies = Request.Cookies.Any(c => c.Name != Server.HTTP.Session.SessionCookieName);
+            var bodyText = "";
+
+            if (requestHasCookies)
             {
                 var cookieText = new StringBuilder();
                 cookieText.AppendLine("<h1>Cookies</h1>");
@@ -63,7 +52,7 @@ namespace BasicWebServer.Demo.Controllers
                 cookieText
                     .Append("<table border='1'><tr><th>Name</th><th>Value</th></tr>");
 
-                foreach (var cookie in this.Request.Cookies)
+                foreach (var cookie in Request.Cookies)
                 {
                     cookieText.Append("<tr>");
                     cookieText
@@ -72,63 +61,48 @@ namespace BasicWebServer.Demo.Controllers
                         .Append($"<td>{HttpUtility.HtmlEncode(cookie.Value)}</td>");
                     cookieText.Append("</tr>");
                 }
-
                 cookieText.Append("</table>");
-                return Html(cookieText.ToString());
+
+                bodyText = cookieText.ToString();
+
+                return Html(bodyText);
+            }
+            else
+            {
+                bodyText = "<h1>Cookies set!</h1>";
             }
 
             var cookies = new CookieCollection();
-            cookies.Add("My-Cookie", "My-Value");
-            cookies.Add("My-Second-Cookie", "My-Second-Value");
 
-            return Html("<h1>Cookies set!</h1>", cookies);
+            if (!requestHasCookies)
+            {
+                cookies.Add("My-Cookie", "My-Value");
+                cookies.Add("My-Second-Cookie", "My-Second-Value");
+            }
+
+            return Html(bodyText, cookies);
         }
+
         public Response Session()
         {
-            string currentDateKey = "CurrentDate";
-            var sessionExists = this.Request.Session.ContainsKey(currentDateKey);
+            var sessionExists = Request.Session
+                .ContainsKey(Server.HTTP.Session.SessionCurrentDateKey);
+
+            var bodyText = "";
 
             if (sessionExists)
             {
-                var currentDate = this.Request.Session[currentDateKey];
-
-                return Text($"Stored date: {currentDate}!");
+                var currentDate = Request.Session[Server.HTTP.Session.SessionCurrentDateKey];
+                bodyText = $"Stored date: {currentDate}!";
             }
-
-            return Text("Current date stored!");
-        }
-
-
-        private static async Task DownloadSitesAsTextFile(
-            string filename, string[] urls)
-        {
-            var downloads = new List<Task<string>>();
-
-            foreach (var url in urls)
+            else
             {
-                downloads.Add(DownloadWebSiteContent(url));
+                bodyText = "Current date stored!";
             }
 
-            var responses = await Task.WhenAll(downloads);
-
-            var responsesString = string.Join(Environment.NewLine + new String('-', 100), responses);
-
-            //fix after lecture with Stamo??
-            await System.IO.File.WriteAllTextAsync(filename, responsesString);
+            return Text(bodyText);
         }
 
-        private static async Task<string> DownloadWebSiteContent(string url)
-        {
-            var httpClient = new HttpClient();
-            using (httpClient)
-            {
-                var response = await httpClient.GetAsync(url);
-
-                var html = await response.Content.ReadAsStringAsync();
-
-                return html.Substring(0, 2000);
-            }
-        }
-
+        public Response Content() => View();
     }
 }

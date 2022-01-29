@@ -1,4 +1,6 @@
-﻿namespace BasicWebServer.Server.Common
+﻿using System;
+
+namespace BasicWebServer.Server.Common
 {
     public static class Guard
     {
@@ -8,9 +10,8 @@
             {
                 name ??= "Value";
 
-                throw new ArgumentNullException($"{name} can not be null");
+                throw new ArgumentException($"{name} cannot be null.");
             }
         }
     }
-    
 }
