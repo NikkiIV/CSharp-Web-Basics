@@ -1,10 +1,7 @@
 ﻿using BasicWebServer.Demo.Controllers;
 using BasicWebServer.Server;
-using BasicWebServer.Server.HTTP;
-using BasicWebServer.Server.Responses;
 using BasicWebServer.Server.Routing;
-using System.Text;
-using System.Web;
+using System.Threading.Tasks;
 
 namespace BasicWebServer.Demo
 {
@@ -24,38 +21,9 @@ namespace BasicWebServer.Demo
                 .MapGet<UsersController>("/Login", c => c.Login())
                 .MapPost<UsersController>("/Login", c => c.LogInUser())
                 .MapGet<UsersController>("/Logout", c => c.Logout())
-                .MapGet<HomeController>("/UserProfile", c => c.GetUserData()))
+                .MapGet<UsersController>("/UserProfile", c => c.GetUserData()))
                 .Start();
         }
 
-        //private static void GetUserDataAction(Request request, Response response)
-        //{
-        //    if (request.Session.ContainsKey(Session.SessionUserKey))
-        //    {
-        //        response.Body = "";
-        //        response.Body += $"<h3>Currently logged-in user " +
-        //            $"is with username '{Username}'<h3>";
-        //    }
-        //    else
-        //    {
-        //        response.Body = "";
-        //        response.Body += $"<h3>You should first log in " +
-        //            "- <a href='/Login'>Login</a><h3>";
-        //    }
-        //}
-         
-        //private static void AddFormDataAction(Request request, Response response)
-        //{
-        //    response.Body = "";
-
-        //    foreach (var (key, value) in request.Form)
-        //    {
-        //        response.Body += $"{key} - {value}";
-        //        response.Body += Environment.NewLine;
-        //    }
-        //}
-               
-        
-        
     }
 }
