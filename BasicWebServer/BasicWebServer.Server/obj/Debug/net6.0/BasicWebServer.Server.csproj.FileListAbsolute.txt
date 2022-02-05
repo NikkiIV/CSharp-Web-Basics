@@ -20,3 +20,4 @@ K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Ser
 K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.dll
 K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\ref\BasicWebServer.Server.dll
 K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.pdb
+K:\SOFTuni\06 C# Web (Solutions)\C# Web Basics\BasicWebServer\BasicWebServer.Server\obj\Debug\net6.0\BasicWebServer.Server.csproj.AssemblyReference.cache
