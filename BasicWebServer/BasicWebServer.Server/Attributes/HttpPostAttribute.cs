@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BasicWebServer.Server.HTTP;
 
 namespace BasicWebServer.Server.Attributes
 {
-    internal class HttpPostAttribute
+    public class HttpPostAttribute : HttpMethodAttribute
     {
+        public HttpPostAttribute() : base(Method.Post)
+        {
+        }
     }
 }

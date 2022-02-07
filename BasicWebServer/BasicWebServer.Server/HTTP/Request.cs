@@ -37,7 +37,6 @@ namespace BasicWebServer.Server.HTTP
             var startLine = lines.First().Split(" ");
 
             var method = ParseMethod(startLine[0]);
-            //var url = startLine[1];
             (string url, Dictionary<string, string> query) = ParseUrl(startLine[1]);
 
             var headers = ParseHeaders(lines.Skip(1));
@@ -61,7 +60,7 @@ namespace BasicWebServer.Server.HTTP
                 Body = body,
                 Session = session,
                 Form = form,
-                Query = query,
+                Query = query
             };
         }
 

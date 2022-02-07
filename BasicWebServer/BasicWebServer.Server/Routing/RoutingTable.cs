@@ -18,9 +18,10 @@ namespace BasicWebServer.Server.Routing
             [Method.Delete] = new(StringComparer.InvariantCultureIgnoreCase)
         };
 
+
         public IRoutingTable Map(
-            Method method, 
-            string path, 
+            Method method,
+            string path,
             Func<Request, Response> responseFunction)
         {
             Guard.AgainstNull(path, nameof(path));
@@ -31,7 +32,7 @@ namespace BasicWebServer.Server.Routing
                 case Method.Get:
                     return MapGet(path, responseFunction);
                 case Method.Post:
-                    return MapPost(path, responseFunction); 
+                    return MapPost(path, responseFunction);
                 case Method.Put:
                 case Method.Delete:
                 default:
@@ -43,6 +44,7 @@ namespace BasicWebServer.Server.Routing
             string path,
             Func<Request, Response> responseFunction)
         {
+            Guard.AgainstDuplicatedKey(routes[Method.Get], path, "RoutingTable.Get");
             routes[Method.Get][path] = responseFunction;
 
             return this;
@@ -52,6 +54,7 @@ namespace BasicWebServer.Server.Routing
             string path,
             Func<Request, Response> responseFunction)
         {
+            Guard.AgainstDuplicatedKey(routes[Method.Post], path, "RoutingTable.Post");
             routes[Method.Post][path] = responseFunction;
 
             return this;

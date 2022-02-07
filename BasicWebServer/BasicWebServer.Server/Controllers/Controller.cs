@@ -1,4 +1,5 @@
 ﻿using BasicWebServer.Server.HTTP;
+using BasicWebServer.Server.Identity;
 using BasicWebServer.Server.Responses;
 using System.Runtime.CompilerServices;
 
@@ -6,17 +7,46 @@ namespace BasicWebServer.Server.Controllers
 {
     public class Controller
     {
-        protected Request Request { get; private init; }
+        protected Request Request { get; set; }
+
+        private UserIdentity userIdentity;
 
         public Controller(Request request)
         {
             Request = request;
         }
 
+        protected UserIdentity User
+        {
+            get
+            {
+                if (this.userIdentity == null)
+                {
+                    this.userIdentity = this.Request.Session.ContainsKey(Session.SessionUserKey)
+                        ? new UserIdentity { Id = this.Request.Session[Session.SessionUserKey] }
+                        : new();
+                }
+
+                return this.userIdentity;
+            }
+        }
+
+        protected void SignIn(string userId)
+        {
+            this.Request.Session[Session.SessionUserKey] = userId;
+            this.userIdentity = new UserIdentity { Id = userId };
+        }
+
+        protected void SignOut()
+        {
+            this.Request.Session.Clear();
+            this.userIdentity = new();
+        }
+
         protected Response Text(string text) => new TextResponse(text);
         protected Response Html(string text) => new HtmlResponse(text);
         protected Response Html(string html, CookieCollection cookies)
-        { 
+        {
             var response = new HtmlResponse(html);
 
             if (cookies != null)
@@ -40,7 +70,7 @@ namespace BasicWebServer.Server.Controllers
         protected Response View(object model, [CallerMemberName] string viewName = "")
             => new ViewResponse(viewName, GetControllerName(), model);
 
-        private string GetControllerName() 
+        private string GetControllerName()
             => this.GetType().Name
                 .Replace(nameof(Controller), string.Empty);
     }
